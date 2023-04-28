@@ -33,7 +33,7 @@ sudo /usr/local/bin/k0s kubeconfig admin > ~/.kube/config
 
 printf "\n\n${CYAN}Installing k8s dashboard${NC}\n\n"
 
-kubectl apply -f https://raw.githubusercontent.com/lidoror/k0s-helper/main/Dashboard/dashboard.yaml
+kubectl apply -f https://raw.githubusercontent.com/lidoror/devops-uni-final-project/main/Infra/k0s_init/Dashboard/dashboard.yaml
 
 cat > Dashboard-admin-service-account.yaml <<EOF
 apiVersion: v1
