@@ -29,7 +29,7 @@ then
 fi
 
 mkdir -p ~/.kube
-sudo /usr/local/bin/k0s kubeconfig admin > ~/.kube/config
+sudo /usr/local/bin/k0s kubeconfig admin > ~/.kube/config && printf "\n\n${CYAN}kubeconfig created${NC}\n\n"
 
 printf "\n\n${CYAN}Installing k8s dashboard${NC}\n\n"
 
