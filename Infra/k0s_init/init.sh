@@ -8,7 +8,6 @@ RED='\033[0;31m'
 if [ -x /usr/local/bin/k0s ]; then
 	sudo /usr/local/bin/k0s stop &> /dev/null
 	sudo /usr/local/bin/k0s reset &> /dev/null
-	exit 0
 else
 
 	curl -sSLf https://get.k0s.sh | sudo sh && echo "${CYAN}k0s downloaded${NC}"
