@@ -9,10 +9,8 @@ if [ -x /usr/local/bin/k0s ]; then
 	sudo /usr/local/bin/k0s stop &> /dev/null
 	sudo /usr/local/bin/k0s reset &> /dev/null
 else
-  curl -sSLf https://get.k0s.sh | INSTALL_K0S_EXEC="--tls-san 127.0.0.1, 10.0.3.119, fe80::4e1:ecff:fe3b:9bfb, 10.96.0.1 , 35.165.218.54" sh
 
-
-	#curl -sSLf https://get.k0s.sh | sudo sh && echo "${CYAN}k0s downloaded${NC}"
+	curl -sSLf https://get.k0s.sh | sudo sh && echo "${CYAN}k0s downloaded${NC}"
 
 fi
 
