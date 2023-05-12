@@ -31,16 +31,13 @@ module "ec2_instance_k0s_master" {
   vpc_security_group_ids = [aws_security_group.k0s_sg_master.id]
   subnet_id              = module.app_vpc.public_subnets[0]
 
-  root_block_device = [{
+  iam_instance_profile = aws_iam_instance_profile.k0s_master_instance_profile.name
+
+root_block_device = [{
     volume_type = "gp2"
     volume_size = 30
 
   }]
-
-  user_data =
-  "curl -o ecr-creds-helper.yaml https://raw.githubusercontent.com/lidoror/k0s-helper/main/CronJob/ecr-creds-helper.yaml"
-
-
 
 
   tags = {

@@ -1,0 +1,90 @@
+---
+
+- hosts: all
+  name: install k0s cluster
+  become: yes
+  become_user: "{{ user }}"
+  gather_facts: true
+  vars_files:
+    - vars/k0s_vars.yaml
+
+  tasks:
+    - name: Install dependencies
+      yum:
+        name:
+          - python3-pip
+          - python3-setuptools
+          - curl
+        update_cache: yes
+
+
+    - name: generate ecr cred helper yaml
+      shell: curl -o ecr-creds-helper.yaml https://raw.githubusercontent.com/lidoror/k0s-helper/main/CronJob/ecr-creds-helper.yaml
+      when: inventory_hostname in groups["master"]
+
+    - name: install master node
+      shell: curl https://raw.githubusercontent.com/lidoror/devops-uni-final-project/main/Infra/k0s_init/init.sh | bash -e
+      when: inventory_hostname in groups["master"]
+
+    - name: install k0s binary
+      become_user: "{{ super_user }}"
+      shell: curl -sSLf https://get.k0s.sh | sudo sh
+      when: inventory_hostname in groups["nodes"]
+
+
+
+    - name: generate token
+      become: true
+      become_user: "{{ super_user }}"
+      become_method: su
+      become_exe: sudo su -
+      shell: /usr/local/bin/k0s token create --role=worker --expiry=1h > /token
+      when: inventory_hostname in groups["master"]
+
+
+    - name: copy token file
+      become: true
+      become_user: "{{ super_user }}"
+      fetch:
+        src: /token
+        dest: token
+        flat: yes
+      when: inventory_hostname in groups["master"]
+
+    - name: copy token file to workers machine
+      become: true
+      become_user: "{{ super_user }}"
+      become_method: su
+      become_exe: sudo su -
+      copy:
+        src: token
+        dest: /token
+      when: inventory_hostname in groups["nodes"]
+
+    - name: add worker
+      become: true
+      become_user: "{{ super_user }}"
+      become_method: su
+      become_exe: sudo su -
+      command: k0s install worker --token-file /token
+      when: inventory_hostname in groups["nodes"]
+
+    - name: add worker
+      become: true
+      become_user: "{{ super_user }}"
+      become_method: su
+      become_exe: sudo su -
+      command: k0s start
+      when: inventory_hostname in groups["nodes"]
+
+    - name: fetch kubeconfig
+      become_user: "{{ user }}"
+      fetch:
+        src: ~/.kube/config
+        dest: master-kube-config
+        flat: yes
+      when: inventory_hostname in groups["master"]
+
+
+
+

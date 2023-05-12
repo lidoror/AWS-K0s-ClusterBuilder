@@ -38,3 +38,14 @@ data "aws_eip" "k0s_master_cluster_eip" {
     values = ["lidoror-k0s-master"]
   }
 }
+
+data "aws_iam_policy_document" "instance_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
