@@ -1,0 +1,25 @@
+---
+
+- hosts: all
+  name: install k0s cluster
+  become: yes
+  become_user: "{{ user }}"
+  gather_facts: true
+  vars_files:
+    - vars/k0s_vars.yaml
+
+  tasks:
+    - name: curl helm binary
+      become_user: "{{ user }}"
+      shell: curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+      when: inventory_hostname in groups["master"]
+
+    - name: chmod helm binary
+      become_user: "{{ user }}"
+      shell: chmod 700 get_helm.sh
+      when: inventory_hostname in groups["master"]
+
+    - name: run helm binary
+      become_user: "{{ user }}"
+      shell: ./get_helm.sh
+      when: inventory_hostname in groups["master"]
